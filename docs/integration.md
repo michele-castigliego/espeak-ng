@@ -87,4 +87,29 @@ Code below shows, how to set more detailed properties of the voice (e.g. languag
 
 Look for details at [espeak_ng.h](https://github.com/espeak-ng/espeak-ng/blob/master/src/include/espeak-ng/espeak_ng.h) and [speak_lib.h](https://github.com/espeak-ng/espeak-ng/blob/master/src/include/espeak-ng/speak_lib.h) files.
 
+## Python example
+
+The `espeak_TextToPhonemes` function can also be called from Python using
+`ctypes`:
+
+```python
+from ctypes import CDLL, POINTER, c_char_p, c_int, pointer
+
+espeak = CDLL("libespeak-ng.so")
+espeak.espeak_TextToPhonemes.argtypes = [POINTER(c_char_p), c_int, c_int]
+espeak.espeak_TextToPhonemes.restype = c_char_p
+
+espeakCHARS_UTF8 = 1
+espeakPHONEMES_SHOW = 0x01
+
+text_ptr = c_char_p("Hello world".encode("utf-8"))
+result_ptr = espeak.espeak_TextToPhonemes(
+    pointer(text_ptr),
+    espeakCHARS_UTF8,  # textmode
+    espeakPHONEMES_SHOW,  # phonememode
+)
+phonemes = result_ptr.decode("utf-8")
+print(phonemes)
+```
+
 
