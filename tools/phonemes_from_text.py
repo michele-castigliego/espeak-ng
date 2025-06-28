@@ -8,11 +8,12 @@ line interface to query phonemes.
 
 Usage::
 
-    python tools/phonemes_from_text.py [--ipa {1,2,3}] [-v VOICE] TEXT
+    python tools/phonemes_from_text.py [--ipa {1,2,3}] [-v VOICE] [--path PATH] TEXT
 """
 from ctypes import CDLL, POINTER, c_char_p, c_int, pointer
 from ctypes.util import find_library
 import argparse
+import os
 
 libname = find_library("espeak-ng") or "libespeak-ng.so"
 espeak = CDLL(libname)
@@ -28,8 +29,6 @@ espeak.espeak_TextToPhonemes.restype = c_char_p
 
 # Initialize the library and select a voice
 AUDIO_OUTPUT_RETRIEVAL = 1
-espeak.espeak_Initialize(AUDIO_OUTPUT_RETRIEVAL, 0, None, 0)
-espeak.espeak_SetVoiceByName(b"it")
 espeakCHARS_UTF8 = 1
 espeakPHONEMES_SHOW = 0x01
 espeakPHONEMES_IPA = 0x02
@@ -63,8 +62,17 @@ if __name__ == "__main__":
         default="it",
         help="Language voice to use",
     )
+    default_path = os.environ.get("ESPEAK_DATA_PATH")
+    if default_path is None:
+        default_path = os.path.join(os.path.dirname(__file__), "..", "espeak-ng-data")
+    parser.add_argument(
+        "--path",
+        default=default_path,
+        help="Path to eSpeak NG data directory",
+    )
     args = parser.parse_args()
 
+    espeak.espeak_Initialize(AUDIO_OUTPUT_RETRIEVAL, 0, args.path.encode(), 0)
     espeak.espeak_SetVoiceByName(args.voice.encode())
 
     if args.ipa is None:

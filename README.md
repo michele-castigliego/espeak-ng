@@ -3,6 +3,7 @@
 - [Features](#features)
 - [Supported languages](docs/languages.md)
 - [Documentation](#documentation)
+- [Tools](#tools)
 - [eSpeak Compatibility](#espeak-compatibility)
 - [History](#history)
 - [License Information](#license-information)
@@ -67,6 +68,19 @@ The following platforms are supported:
 4. [Index](docs/index.md) provides full list of more detailed information for contributors and developers.
 5. Look at [contribution guide](docs/contributing.md) to start your contribution.
 6. Look at [eSpeak NG roadmap](https://github.com/espeak-ng/espeak-ng/wiki/eSpeak-NG-roadmap) to participate in development of eSpeak NG.
+
+## Tools
+
+The repository provides a small Python helper at `tools/phonemes_from_text.py`.
+It queries the library for phonemes of a given text. When using the
+dictionary files from this source tree run the script with the local path:
+
+```
+python tools/phonemes_from_text.py --path espeak-ng-data "hello"
+```
+
+The `--path` option defaults to the `ESPEAK_DATA_PATH` environment variable or
+`espeak-ng-data` relative to the script.
 
 ## eSpeak Compatibility
 
