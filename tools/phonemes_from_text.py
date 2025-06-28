@@ -73,7 +73,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     espeak.espeak_Initialize(AUDIO_OUTPUT_RETRIEVAL, 0, args.path.encode(), 0)
-    espeak.espeak_SetVoiceByName(args.voice.encode())
+    if espeak.espeak_SetVoiceByName(args.voice.encode()) != 0:
+        parser.error(f"voice '{args.voice}' not found in {args.path}")
 
     if args.ipa is None:
         phonememode = espeakPHONEMES_SHOW
